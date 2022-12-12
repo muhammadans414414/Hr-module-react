@@ -1,0 +1,28 @@
+import { configureStore,combineReducers } from '@reduxjs/toolkit';
+import loginReducer from './loginSlice';
+import authTokenSlice from './authTokenSlice';
+import currentUserSlice from './currentUserSlice';
+import storage from 'redux-persist/lib/storage';
+import { persistReducer, persistStore } from 'redux-persist';
+import thunk from 'redux-thunk';
+
+const persistConfig = {
+  key: 'root',
+  storage,
+}
+
+const rootReducer = combineReducers({ 
+  auth: loginReducer,
+  token: authTokenSlice,
+  current_user:currentUserSlice
+})
+
+const persistedReducer = persistReducer(persistConfig, rootReducer);
+
+const store = configureStore({
+  reducer: persistedReducer,
+  middleware: [thunk]
+})
+
+export const persistor = persistStore(store);
+export default store;
